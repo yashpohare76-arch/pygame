@@ -1,0 +1,42 @@
+import pygame, sys
+pygame.init()
+
+WIDTH, HEIGHT = 800, 400
+win = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("2 Player Volleyball")
+
+clock = pygame.time.Clock()
+ball = pygame.Rect(WIDTH//2, HEIGHT//2, 20, 20)
+left_player = pygame.Rect(50, HEIGHT-100, 20, 80)
+right_player = pygame.Rect(WIDTH-70, HEIGHT-100, 20, 80)
+ball_speed = [4, 4]
+
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit()
+
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_w] and left_player.top > 0:
+        left_player.y -= 5
+    if keys[pygame.K_s] and left_player.bottom < HEIGHT:
+        left_player.y += 5
+    if keys[pygame.K_UP] and right_player.top > 0:
+        right_player.y -= 5
+    if keys[pygame.K_DOWN] and right_player.bottom < HEIGHT:
+        right_player.y += 5
+
+    ball.x += ball_speed[0]
+    ball.y += ball_speed[1]
+
+    if ball.top <= 0 or ball.bottom >= HEIGHT:
+        ball_speed[1] *= -1
+    if ball.colliderect(left_player) or ball.colliderect(right_player):
+        ball_speed[0] *= -1
+
+    win.fill((135, 206, 235))  # sky color
+    pygame.draw.rect(win, (0, 0, 255), left_player)
+    pygame.draw.rect(win, (255, 0, 0), right_player)
+    pygame.draw.circle(win, (255, 255, 0), (ball.x, ball.y), 10)
+    pygame.display.flip()
+    clock.tick(60)
